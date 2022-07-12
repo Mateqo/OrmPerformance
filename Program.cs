@@ -10,14 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddDbContext<NorthwindContext>(options =>
+                options.UseSqlServer(builder.Configuration["Connectionstring"]));
+
 builder.Services.AddTransient<IEntityFrameworkRepositories, EntityFrameworkRepositories>();
 builder.Services.AddTransient<IEntityFrameworkService, EntityFrameworkService>();
 
 builder.Services.AddTransient<IDapperRepositories, DapperRepositories>();
 builder.Services.AddTransient<IDapperService, DapperService>();
-
-builder.Services.AddDbContext<NorthwindContext>(options =>
-                options.UseSqlServer(builder.Configuration["Connectionstring"]));
 
 builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();

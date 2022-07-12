@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using OrmPerformance.Models.EntityFramework;
+using OrmPerformance.Models.Dapper;
 using System.Data;
 
 namespace OrmPerformance.Repositories.Dapper
@@ -11,7 +11,7 @@ namespace OrmPerformance.Repositories.Dapper
 
         public DapperRepositories(IConfiguration configuration)
         {
-            db = new SqlConnection("Server=.\\SQLExpress;Database=Northwind;Trusted_Connection=True;");
+            db = new SqlConnection(configuration.GetValue<string>("Connectionstring"));
         }
 
         public Order Get(int id)

@@ -1,4 +1,4 @@
-﻿using OrmPerformance.Models.EntityFramework;
+﻿using OrmPerformance.Models.Dapper;
 
 namespace OrmPerformance.Repositories.Dapper
 {
