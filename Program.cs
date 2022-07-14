@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using OrmPerformance.Extension.NHibernate;
 using OrmPerformance.Models.EntityFramework;
 using OrmPerformance.Repositories.Dapper;
 using OrmPerformance.Repositories.EntityFramework;
+using OrmPerformance.Repositories.NHibernate;
 using OrmPerformance.Services.Dapper;
 using OrmPerformance.Services.EntityFramework;
+using OrmPerformance.Services.NHibernate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +22,13 @@ builder.Services.AddTransient<IEntityFrameworkService, EntityFrameworkService>()
 builder.Services.AddTransient<IDapperRepositories, DapperRepositories>();
 builder.Services.AddTransient<IDapperService, DapperService>();
 
+builder.Services.AddNHibernate(builder.Configuration["Connectionstring"]);
+
 builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();
 
 var app = builder.Build();
+
 
 
 // Configure the HTTP request pipeline.
