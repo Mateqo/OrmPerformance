@@ -1,8 +1,7 @@
 ﻿namespace OrmPerformance.ViewModels.Orders
 {
-    public class OrderGet
+    public class OrderCreate
     {
-        public int Id { get; set; }
         public string ShipName { get; set; }
         public string ShipAddress { get; set; }
         public string ShipCity { get; set; }

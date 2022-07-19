@@ -6,3 +6,31 @@
     <h1 class="display-4">Start</h1>
     <p>W tym przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie</p>
 </div>
+
+<div>
+    <a class="btn btn-primary" id="getEntity" onclick="getEntity();">Entity Get</a>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        function getEntity() {
+            $.ajax({
+                url: '/Entity/Get',
+                //data: { id: productId },
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    //$("#showContact").css('cursor', 'default');
+                    //$("#showContact").css('background-color', 'var(--main-color)');
+                    //$("#showContact").html(json.data);
+                },
+                error: function (xhr, status) {
+                    alert('Przepraszamy, wystąpił problem!');
+                },
+                complete: function (xhr, status) {
+                }
+            });
+        }    
+    </script>
+}

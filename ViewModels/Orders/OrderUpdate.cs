@@ -1,6 +1,6 @@
 ﻿namespace OrmPerformance.ViewModels.Orders
 {
-    public class OrderGet
+    public class OrderUpdate
     {
         public int Id { get; set; }
         public string ShipName { get; set; }
