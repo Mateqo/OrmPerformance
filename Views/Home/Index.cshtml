@@ -8,29 +8,77 @@
 </div>
 
 <div>
-    <a class="btn btn-primary" id="getEntity" onclick="getEntity();">Entity Get</a>
+    <div class="text-center mt-5">
+            <div class="d-block mt-5 mb-5">
+                <select class="form-select d-inline" style="width:250px;">
+                    <option selected disabled hidden>Proszę wybrać opcję</option>
+                    <option value="1">Get</option>
+                    <option value="2">Create</option>
+                    <option value="3">Update</option>
+                </select>
+                 <input id="count" class="form-select d-inline" type="number" style="width:150px;"/>
+            </div>
+        <a class="btn btn-dark font-weight-bold" id="getEntity" onclick="start();">Rozpocznij test</a>
+    </div>
+    @*    <div class="spinner-border text-dark" role="status">
+        <span class="sr-only"></span>
+        </div>*@
+    <div class="row text-center mt-5">
+        <div class="col-4">
+            <p>Entity Framework</p>
+            <img alt="Entity Framewok" src="./img/entityFramework.png" style="width:15vw;height:25vh"/>
+            <div id="entitySpinner" class="spinner-grow text-dark" role="status" style="display:none;">
+                <span class="sr-only"></span>
+            </div>
+            <p id="entityTime">- s</p>
+        </div>
+        <div class="col-4">
+            <p>Dapper</p>
+            <div class="spinner-grow text-dark" role="status">
+                <span class="sr-only"></span>
+            </div>
+            <p id="dapperTime">- s</p>
+        </div>
+        <div class="col-4">
+            <p>nHibernate</p>
+            <div class="spinner-grow text-dark" role="status">
+                <span class="sr-only"></span>
+            </div>
+            <p id="nHibernateTime">- s</p>
+        </div>
+    </div>
 </div>
 
 @section Scripts{
-    <script type="text/javascript">
-        function getEntity() {
-            $.ajax({
-                url: '/Entity/Get',
-                //data: { id: productId },
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);
-                    //$("#showContact").css('cursor', 'default');
-                    //$("#showContact").css('background-color', 'var(--main-color)');
-                    //$("#showContact").html(json.data);
-                },
-                error: function (xhr, status) {
-                    alert('Przepraszamy, wystąpił problem!');
-                },
-                complete: function (xhr, status) {
-                }
-            });
-        }    
-    </script>
+<script type="text/javascript">
+    function start(){
+        $("#entityTime").html("- s");
+        getEntity();
+    }
+    function getEntity() {
+        $("#entitySpinner").show();
+        var id = 10248;
+        var count = $("#count").val();
+        console.log($("#count").val());
+        $.ajax({
+            url: '/Entity/Get',
+            data: { id: id, count: count },
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $("#entityTime").html(data.time);
+                //$("#showContact").css('cursor', 'default');
+                //$("#showContact").css('background-color', 'var(--main-color)');
+                //$("#showContact").html(json.data);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+            }
+        });
+    }
+</script>
 }

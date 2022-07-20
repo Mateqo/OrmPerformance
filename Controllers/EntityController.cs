@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrmPerformance.Extension.Common;
 using OrmPerformance.Services.EntityFramework;
 using OrmPerformance.ViewModels.Orders;
+using System.Diagnostics;
 
 namespace OrmPerformance.Controllers
 {
@@ -20,6 +22,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<OrderGet> orders = new List<OrderGet>();
 
                 for (int i = 1; i <= count; i++)
@@ -28,7 +33,10 @@ namespace OrmPerformance.Controllers
                     orders.Add(viewModel);
                 }
 
-                return Json(orders);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = orders, time = time });
             }
             catch (Exception e)
             {

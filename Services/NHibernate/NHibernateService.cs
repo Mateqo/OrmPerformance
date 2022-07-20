@@ -19,7 +19,7 @@ namespace OrmPerformance.Services.NHibernate
             return new OrderGet()
             {
                 Id = order.OrderID,
-                Name = order.ShipName
+                //Name = order.ShipName
             };
         }
     }

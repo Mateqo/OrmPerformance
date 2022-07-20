@@ -19,7 +19,7 @@ namespace OrmPerformance.Services.Dapper
             return new OrderGet()
             {
                 Id = order.OrderId,
-                Name = order.ShipName
+                //Name = order.ShipName
             };
         }
     }
