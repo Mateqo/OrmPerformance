@@ -9,15 +9,15 @@
 
 <div>
     <div class="text-center mt-5">
-            <div class="d-block mt-5 mb-5">
-                <select class="form-select d-inline" style="width:250px;">
-                    <option selected disabled hidden>Proszę wybrać opcję</option>
-                    <option value="1">Get</option>
-                    <option value="2">Create</option>
-                    <option value="3">Update</option>
-                </select>
-                 <input id="count" class="form-select d-inline" type="number" style="width:150px;"/>
-            </div>
+        <div class="d-block mt-5 mb-5">
+            <select class="form-select d-inline" style="width:250px;">
+                <option selected disabled hidden>Proszę wybrać opcję</option>
+                <option value="1">Get</option>
+                <option value="2">Create</option>
+                <option value="3">Update</option>
+            </select>
+            <input id="count" class="form-select d-inline" type="number" style="width:150px;" />
+        </div>
         <a class="btn btn-dark font-weight-bold" id="getEntity" onclick="start();">Rozpocznij test</a>
     </div>
     @*    <div class="spinner-border text-dark" role="status">
@@ -26,7 +26,7 @@
     <div class="row text-center mt-5">
         <div class="col-4">
             <p>Entity Framework</p>
-            <img alt="Entity Framewok" src="./img/entityFramework.png" style="width:15vw;height:25vh"/>
+            <img alt="Entity Framewok" src="./img/entityFramework.png" style="width:15vw;height:25vh" />
             <div id="entitySpinner" class="spinner-grow text-dark" role="status" style="display:none;">
                 <span class="sr-only"></span>
             </div>
@@ -53,13 +53,12 @@
 <script type="text/javascript">
     function start(){
         $("#entityTime").html("- s");
-        getEntity();
+        deleteEntity();
     }
     function getEntity() {
         $("#entitySpinner").show();
         var id = 10248;
         var count = $("#count").val();
-        console.log($("#count").val());
         $.ajax({
             url: '/Entity/Get',
             data: { id: id, count: count },
@@ -71,6 +70,157 @@
                 //$("#showContact").css('cursor', 'default');
                 //$("#showContact").css('background-color', 'var(--main-color)');
                 //$("#showContact").html(json.data);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+            }
+        });
+    }
+
+    function getExtendedEntity() {
+        $("#entitySpinner").show();
+        var phrase = 'anar';
+        var count = $("#count").val();
+        $.ajax({
+            url: '/Entity/GetExtended',
+            data: { phrase: phrase, count: count },
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $("#entityTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+            }
+        });
+    }
+
+    function getWithJoinEntity() {
+        $("#entitySpinner").show();
+        var id = 10248;
+        var count = $("#count").val();
+        $.ajax({
+            url: '/Entity/GetWithJoin',
+            data: { id: id, count: count },
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $("#entityTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+            }
+        });
+    }
+
+   function getWithJoinExtendedEntity() {
+        $("#entitySpinner").show();
+        var phrase = 'anar';
+        var count = $("#count").val();
+        $.ajax({
+            url: '/Entity/GetWithJoinExtended',
+            data: { phrase: phrase, count: count },
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $("#entityTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+            }
+        });
+    }
+
+   function createEntity() {
+        $("#entitySpinner").show();
+        var count = $("#count").val();
+
+        var create = {
+            shipName: "shipName",
+            shipAddress: "ShipAddress",
+            shipCity: "ShipCity",
+            shipRegion: "ShipRegion",
+            shipPostalCode: "PostalCode",
+            shipCountry: "ShipCountry",
+        };
+
+        $.ajax({
+            url: '/Entity/Create',
+            data: { count: count, create: create },
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $("#entityTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+            }
+        });
+    }
+
+       function updateEntity() {
+        $("#entitySpinner").show();
+        var count = $("#count").val();
+
+        var update = {
+            id:11080,
+            shipName: "shipName4",
+            shipAddress: "ShipAddress2",
+            shipCity: "ShipCity2",
+            shipRegion: "ShipRegion2",
+            shipPostalCode: "Postal2",
+            shipCountry: "ShipCountry2",
+        };
+
+        $.ajax({
+            url: '/Entity/Update',
+            data: { count: count, update: update },
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $("#entityTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+            }
+        });
+    }
+
+    function deleteEntity() {
+        $("#entitySpinner").show();
+        var count = $("#count").val();
+        var id = 11082;
+        $.ajax({
+            url: '/Entity/Delete',
+            data: { count: count, id: id },
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $("#entityTime").html(data.time);
             },
             error: function (xhr, status) {
                 alert('Przepraszamy, wystąpił problem!');
