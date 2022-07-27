@@ -10,15 +10,41 @@
 <div>
     <div class="text-center mt-5">
         <div class="d-block mt-5 mb-5">
-            <select class="form-select d-inline" style="width:250px;">
+            <select id="operationOption" class="form-select d-inline" style="width:250px;">
                 <option selected disabled hidden>Proszę wybrać opcję</option>
-                <option value="1">Get</option>
-                <option value="2">Create</option>
-                <option value="3">Update</option>
+                <option value="1">Get (identyfikator)</option>
+                <option value="2">Get (nazwa)</option>
+                <option value="3">Get z relacją (identyfikator)</option>
+                <option value="4">Get z relacją (nazwa)</option>
+                <option value="5">Create</option>
+                <option value="6">Update</option>
+                <option value="7">Delete</option>
             </select>
-            <input id="count" class="form-select d-inline" type="number" style="width:150px;" />
+            <input id="count" class="form-control" type="number" style="width:150px;margin-left:auto;display:none;"/>
         </div>
-        <a class="btn btn-dark font-weight-bold" id="getEntity" onclick="start();">Rozpocznij test</a>
+        <div class="mb-4 mt-0">
+            <div id="idParamDiv" style="display:none;">
+                <p>Parametr</p>
+                <input id="idParam" class="form-control" type="number" />
+            </div>
+            <div id="phraseParamDiv" style="display:none;">
+                <p>Parametr</p>
+                <input id="phraseParam" class="form-control" type="text" />
+            </div>
+            <div id="idsParamDiv" style="display:none;">
+                <textarea id="idsParam"></textarea>
+            </div>
+           <div id="createParamDiv" style="display:none;">
+                <p>Parametry</p>
+                <input id="shipNameParam" class="form-control" type="text" />
+                <input id="shipAddressParam" class="form-control" type="text" />
+                <input id="shipCityParam" class="form-control" type="text" />
+                <input id="shipRegionParam" class="form-control" type="text" />
+                <input id="shipPostalCodeParam" class="form-control" type="text" />
+                <input id="shipCountryParam" class="form-control" type="text" />
+            </div>
+        </div>
+        <a class="btn btn-dark font-weight-bold" id="start" onclick="start();" style="display:none;">Rozpocznij test</a>
     </div>
     @*    <div class="spinner-border text-dark" role="status">
         <span class="sr-only"></span>
@@ -26,11 +52,12 @@
     <div class="row text-center mt-5">
         <div class="col-4">
             <p>Entity Framework</p>
-            <img alt="Entity Framewok" src="./img/entityFramework.png" style="width:15vw;height:25vh" />
+            <div><img alt="Entity Framewok" src="./img/entityFramework.png" style="width:15vw;height:25vh" /></div>
             <div id="entitySpinner" class="spinner-grow text-dark" role="status" style="display:none;">
                 <span class="sr-only"></span>
             </div>
             <p id="entityTime">- s</p>
+            <pre id="resultEntity"></pre>
         </div>
         <div class="col-4">
             <p>Dapper</p>
@@ -49,186 +76,283 @@
     </div>
 </div>
 
+
 @section Scripts{
 <script type="text/javascript">
-    function start(){
-        $("#entityTime").html("- s");
-        deleteEntity();
-    }
-    function getEntity() {
-        $("#entitySpinner").show();
-        var id = 10248;
-        var count = $("#count").val();
-        $.ajax({
-            url: '/Entity/Get',
-            data: { id: id, count: count },
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
+    $('#operationOption').on('change', function() {
+        $("#idParamDiv").hide();
+        $("#phraseParamDiv").hide();
+        $("#createParamDiv").hide();
+        $("#idsParamDiv").hide();
+        $("#count").hide();
+        $("#start").hide();
+
+        switch(this.value) {
+           case "1":
+             $("#idParamDiv").show();
+             $("#count").show();
+             $("#start").show();
+             break;
+           case "2":
+            $("#phraseParamDiv").show();
+            $("#count").show();
+            $("#start").show();
+             break;
+           case "3":
+            $("#idParamDiv").show();
+            $("#count").show();
+            $("#start").show();
+             break;
+          case "4":
+             $("#phraseParamDiv").show();
+             $("#count").show();
+             $("#start").show();
+             break;
+           case "5":
+             $("#createParamDiv").show();
+             $("#count").show();
+             $("#start").show();
+             break;
+           case "6":
+            $("#createParamDiv").show();
+            $("#idsParamDiv").show();
+            $("#start").show();
+           break;
+          case "7":
+            $("#idsParamDiv").show();
+            $("#start").show();
+           break;
+         }
+    });
+
+     function start(){
+         $("#entityTime").html("- s");
+         $("#resultEntity").html("");
+
+         var count = $("#count").val();
+         var option = $('#operationOption').find(":selected").val();
+
+         switch(option) {
+           case "1":
+             var id = $("#idParam").val();
+             getEntity(id, count);
+             break;
+           case "2":
+             var phrase = $("#phraseParam").val();
+             getExtendedEntity(phrase, count);
+             break;
+           case "3":
+             var id = $("#idParam").val();
+             getWithJoinEntity(id, count);
+             break;
+           case "4":
+             var phrase = $("#phraseParam").val();
+             getWithJoinExtendedEntity(phrase, count);
+             break;
+           case "5":
+             var create = {
+                 ShipName: $("#shipNameParam").val(),
+                 ShipAddress: $("#shipAddressParam").val(),
+                 ShipCity: $("#shipCityParam").val(),
+                 ShipRegion: $("#shipRegionParam").val(),
+                 ShipPostalCode: $("#shipPostalCodeParam").val(),
+                 ShipCountry: $("#shipCountryParam").val()
+             }
+             createEntity(create, count);
+             break;
+            case "6":
+             var ids = JSON.parse($("#idsParam").val());
+             var update = {
+                 ShipName: $("#shipNameParam").val(),
+                 ShipAddress: $("#shipAddressParam").val(),
+                 ShipCity: $("#shipCityParam").val(),
+                 ShipRegion: $("#shipRegionParam").val(),
+                 ShipPostalCode: $("#shipPostalCodeParam").val(),
+                 ShipCountry: $("#shipCountryParam").val()
+             }
+             updateEntity(ids,update)
+             break;
+           case "7":
+             var ids = JSON.parse($("#idsParam").val());
+             deleteEntity(ids)
+             break;
+           default:
+             alert("Proszę wybrać opcję")
+         }
+     }
+     function getEntity(id, count) {
+         $("#entitySpinner").show();
+         $.ajax({
+             url: '/Entity/Get',
+             data: { id: id, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultEntity").html("Nie znaleziono");
+                 else{
+                    $("#resultEntity").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
                 $("#entityTime").html(data.time);
-                //$("#showContact").css('cursor', 'default');
-                //$("#showContact").css('background-color', 'var(--main-color)');
-                //$("#showContact").html(json.data);
-            },
-            error: function (xhr, status) {
-                alert('Przepraszamy, wystąpił problem!');
-            },
-            complete: function (xhr, status) {
-                $("#entitySpinner").hide();
-            }
-        });
-    }
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#entitySpinner").hide();
+             }
+         });
+     }
 
-    function getExtendedEntity() {
-        $("#entitySpinner").show();
-        var phrase = 'anar';
-        var count = $("#count").val();
-        $.ajax({
-            url: '/Entity/GetExtended',
-            data: { phrase: phrase, count: count },
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                $("#entityTime").html(data.time);
-            },
-            error: function (xhr, status) {
-                alert('Przepraszamy, wystąpił problem!');
-            },
-            complete: function (xhr, status) {
-                $("#entitySpinner").hide();
-            }
-        });
-    }
+     function getExtendedEntity(phrase, count) {
+         $("#entitySpinner").show();
+         $.ajax({
+             url: '/Entity/GetExtended',
+             data: { phrase: phrase, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
 
-    function getWithJoinEntity() {
-        $("#entitySpinner").show();
-        var id = 10248;
-        var count = $("#count").val();
-        $.ajax({
-            url: '/Entity/GetWithJoin',
-            data: { id: id, count: count },
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                $("#entityTime").html(data.time);
-            },
-            error: function (xhr, status) {
-                alert('Przepraszamy, wystąpił problem!');
-            },
-            complete: function (xhr, status) {
-                $("#entitySpinner").hide();
-            }
-        });
-    }
+                 if(data.result[0] == null)
+                     $("#resultEntity").html("Nie znaleziono");
+                 else{
+                    $("#resultEntity").html(JSON.stringify(data.result[0], null, 4));
+                 }
 
-   function getWithJoinExtendedEntity() {
-        $("#entitySpinner").show();
-        var phrase = 'anar';
-        var count = $("#count").val();
-        $.ajax({
-            url: '/Entity/GetWithJoinExtended',
-            data: { phrase: phrase, count: count },
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                $("#entityTime").html(data.time);
-            },
-            error: function (xhr, status) {
-                alert('Przepraszamy, wystąpił problem!');
-            },
-            complete: function (xhr, status) {
-                $("#entitySpinner").hide();
-            }
-        });
-    }
+                 $("#entityTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#entitySpinner").hide();
+             }
+         });
+     }
 
-   function createEntity() {
-        $("#entitySpinner").show();
-        var count = $("#count").val();
+     function getWithJoinEntity(id, count) {
+         $("#entitySpinner").show();
+         $.ajax({
+             url: '/Entity/GetWithJoin',
+             data: { id: id, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
 
-        var create = {
-            shipName: "shipName",
-            shipAddress: "ShipAddress",
-            shipCity: "ShipCity",
-            shipRegion: "ShipRegion",
-            shipPostalCode: "PostalCode",
-            shipCountry: "ShipCountry",
-        };
+                 if(data.result[0] == null)
+                     $("#resultEntity").html("Nie znaleziono");
+                 else{
+                    $("#resultEntity").html(JSON.stringify(data.result[0], null, 4));
+                 }
 
-        $.ajax({
-            url: '/Entity/Create',
-            data: { count: count, create: create },
-            type: 'POST',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                $("#entityTime").html(data.time);
-            },
-            error: function (xhr, status) {
-                alert('Przepraszamy, wystąpił problem!');
-            },
-            complete: function (xhr, status) {
-                $("#entitySpinner").hide();
-            }
-        });
-    }
+                 $("#entityTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#entitySpinner").hide();
+             }
+         });
+     }
 
-       function updateEntity() {
-        $("#entitySpinner").show();
-        var count = $("#count").val();
+    function getWithJoinExtendedEntity(phrase, count) {
+         $("#entitySpinner").show();
+         $.ajax({
+             url: '/Entity/GetWithJoinExtended',
+             data: { phrase: phrase, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+                              
+                 if(data.result[0] == null)
+                     $("#resultEntity").html("Nie znaleziono");
+                 else{
+                    $("#resultEntity").html(JSON.stringify(data.result[0], null, 4));
+                 }
 
-        var update = {
-            id:11080,
-            shipName: "shipName4",
-            shipAddress: "ShipAddress2",
-            shipCity: "ShipCity2",
-            shipRegion: "ShipRegion2",
-            shipPostalCode: "Postal2",
-            shipCountry: "ShipCountry2",
-        };
+                 $("#entityTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#entitySpinner").hide();
+             }
+         });
+     }
 
-        $.ajax({
-            url: '/Entity/Update',
-            data: { count: count, update: update },
-            type: 'POST',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                $("#entityTime").html(data.time);
-            },
-            error: function (xhr, status) {
-                alert('Przepraszamy, wystąpił problem!');
-            },
-            complete: function (xhr, status) {
-                $("#entitySpinner").hide();
-            }
-        });
-    }
+    function createEntity(create, count) {
+         $("#entitySpinner").show();
+         $.ajax({
+             url: '/Entity/Create',
+             data: { count: count, create: create },
+             type: 'POST',
+             dataType: 'json',
+             success: function (data) {
 
-    function deleteEntity() {
-        $("#entitySpinner").show();
-        var count = $("#count").val();
-        var id = 11082;
-        $.ajax({
-            url: '/Entity/Delete',
-            data: { count: count, id: id },
-            type: 'POST',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                $("#entityTime").html(data.time);
-            },
-            error: function (xhr, status) {
-                alert('Przepraszamy, wystąpił problem!');
-            },
-            complete: function (xhr, status) {
-                $("#entitySpinner").hide();
-            }
-        });
-    }
+                 if(data.result[0] == null)
+                     $("#resultEntity").html("Nie stworzono");
+                 else{
+                    $("#resultEntity").html(JSON.stringify(data.result, null, 4));
+                 }
+
+                 $("#entityTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#entitySpinner").hide();
+             }
+         });
+     }
+
+        function updateEntity(ids,update) {
+         $("#entitySpinner").show();
+         $.ajax({
+             url: '/Entity/Update',
+             data: { ids: ids, update: update },
+             type: 'POST',
+             dataType: 'json',
+             success: function (data) {
+                 $("#entityTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#entitySpinner").hide();
+             }
+         });
+     }
+
+     function deleteEntity(ids) {
+         $("#entitySpinner").show();
+         $.ajax({
+             url: '/Entity/Delete',
+             data: { ids: ids },
+             type: 'POST',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultEntity").html("Nie stworzono");
+                 else{
+                    $("#resultEntity").html(JSON.stringify(data.result, null, 4));
+                 }
+
+                 $("#entityTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#entitySpinner").hide();
+             }
+         });
+     }
 </script>
 }

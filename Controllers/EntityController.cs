@@ -50,6 +50,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<OrderGet> orders = new List<OrderGet>();
 
                 for (int i = 1; i <= count; i++)
@@ -58,7 +61,10 @@ namespace OrmPerformance.Controllers
                     orders.Add(viewModel);
                 }
 
-                return Json(orders);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = orders, time = time });
             }
             catch (Exception e)
             {
@@ -72,6 +78,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<OrderGetExtended> orders = new List<OrderGetExtended>();
 
                 for (int i = 1; i <= count; i++)
@@ -80,7 +89,10 @@ namespace OrmPerformance.Controllers
                     orders.Add(viewModel);
                 }
 
-                return Json(orders);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = orders, time = time });
             }
             catch (Exception e)
             {
@@ -94,6 +106,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<OrderGetExtended> orders = new List<OrderGetExtended>();
 
                 for (int i = 1; i <= count; i++)
@@ -102,7 +117,10 @@ namespace OrmPerformance.Controllers
                     orders.Add(viewModel);
                 }
 
-                return Json(orders);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = orders, time = time });
             }
             catch (Exception e)
             {
@@ -116,6 +134,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<int> ids = new List<int>();
 
                 for (int i = 1; i <= count; i++)
@@ -124,7 +145,11 @@ namespace OrmPerformance.Controllers
                     ids.Add(id);
                 }
 
-                return Json(ids);
+
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = ids, time = time });
             }
             catch (Exception e)
             {
@@ -135,16 +160,23 @@ namespace OrmPerformance.Controllers
 
 
         [HttpPost]
-        public IActionResult Update(int count, OrderUpdate update)
+        public IActionResult Update(List<int> ids ,OrderUpdate update)
         {
             try
             {
-                for (int i = 1; i <= count; i++)
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                foreach (var id in ids)
                 {
+                    update.Id = id;
                     _entityFrameworkService.Update(update);
                 }
 
-                return Json(null);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { time = time });
             }
             catch (Exception e)
             {
@@ -154,19 +186,25 @@ namespace OrmPerformance.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(int count, int id)
+        public IActionResult Delete(List<int> ids)
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<bool> isDeleteList = new List<bool>();
 
-                for (int i = 1; i <= count; i++)
+                foreach (var id in ids)
                 {
                     var isDelete = _entityFrameworkService.Delete(id);
                     isDeleteList.Add(isDelete);
                 }
 
-                return Json(isDeleteList);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = isDeleteList, time = time });
             }
             catch (Exception e)
             {

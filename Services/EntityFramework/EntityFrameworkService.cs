@@ -17,6 +17,9 @@ namespace OrmPerformance.Services.EntityFramework
         {
             var order = _entityFrameworkRepositories.Get(id);
 
+            if (order == null)
+                return null;
+
             return new OrderGet()
             {
                 Id = order.OrderId,
@@ -32,6 +35,9 @@ namespace OrmPerformance.Services.EntityFramework
         public OrderGet GetExtended(string phrase)
         {
             var order = _entityFrameworkRepositories.GetExtended(phrase);
+
+            if (order == null)
+                return null;
 
             return new OrderGet()
             {
@@ -49,6 +55,9 @@ namespace OrmPerformance.Services.EntityFramework
         {
             var order = _entityFrameworkRepositories.GetWithJoin(id);
 
+            if (order == null)
+                return null;
+
             return new OrderGetExtended()
             {
                 Id = order.OrderId,
@@ -58,27 +67,27 @@ namespace OrmPerformance.Services.EntityFramework
                 ShipRegion = order.ShipRegion,
                 ShipPostalCode = order.ShipPostalCode,
                 ShipCountry = order.ShipCountry,
-                CustomerContactName = order.Customer.ContactName,
-                CustomerContactTitle = order.Customer.ContactTitle,
-                CustomerAddress = order.Customer.Address,
-                CustomerCity = order.Customer.City,
-                CustomerRegion = order.Customer.Region,
-                CustomerPostalCode = order.Customer.PostalCode,
-                CustomerCountry = order.Customer.Country,
-                CustomerPhone = order.Customer.Phone,
-                CustomerFax = order.Customer.Fax,
-                EmployeeLastName = order.Employee.LastName,
-                EmployeeFirstName = order.Employee.FirstName,
-                EmployeeTitle = order.Employee.Title,
-                EmployeeTitleOfCourtesy = order.Employee.TitleOfCourtesy,
-                EmployeeAddress = order.Employee.Address,
-                EmployeeCity = order.Employee.City,
-                EmployeeRegion = order.Employee.Region,
-                EmployeePostalCode = order.Employee.PostalCode,
-                EmployeeCountry = order.Employee.Country,
-                EmployeeHomePhone = order.Employee.HomePhone,
-                EmployeeExtension = order.Employee.Extension,
-                ShipViaNavigationPhone = order.ShipViaNavigation.Phone,
+                CustomerContactName = order.Customer?.ContactName,
+                CustomerContactTitle = order.Customer?.ContactTitle,
+                CustomerAddress = order.Customer?.Address,
+                CustomerCity = order.Customer?.City,
+                CustomerRegion = order.Customer?.Region,
+                CustomerPostalCode = order.Customer?.PostalCode,
+                CustomerCountry = order.Customer?.Country,
+                CustomerPhone = order.Customer?.Phone,
+                CustomerFax = order.Customer?.Fax,
+                EmployeeLastName = order.Employee?.LastName,
+                EmployeeFirstName = order.Employee?.FirstName,
+                EmployeeTitle = order.Employee?.Title,
+                EmployeeTitleOfCourtesy = order.Employee?.TitleOfCourtesy,
+                EmployeeAddress = order.Employee?.Address,
+                EmployeeCity = order.Employee?.City,
+                EmployeeRegion = order.Employee?.Region,
+                EmployeePostalCode = order.Employee?.PostalCode,
+                EmployeeCountry = order.Employee?.Country,
+                EmployeeHomePhone = order.Employee?.HomePhone,
+                EmployeeExtension = order.Employee?.Extension,
+                ShipViaNavigationPhone = order.ShipViaNavigation?.Phone,
             };
         }
 
@@ -86,6 +95,9 @@ namespace OrmPerformance.Services.EntityFramework
         {
             var order = _entityFrameworkRepositories.GetWithJoinExtended(phrase);
 
+            if (order == null)
+                return null;
+
             return new OrderGetExtended()
             {
                 Id = order.OrderId,
@@ -95,27 +107,27 @@ namespace OrmPerformance.Services.EntityFramework
                 ShipRegion = order.ShipRegion,
                 ShipPostalCode = order.ShipPostalCode,
                 ShipCountry = order.ShipCountry,
-                CustomerContactName = order.Customer.ContactName,
-                CustomerContactTitle = order.Customer.ContactTitle,
-                CustomerAddress = order.Customer.Address,
-                CustomerCity = order.Customer.City,
-                CustomerRegion = order.Customer.Region,
-                CustomerPostalCode = order.Customer.PostalCode,
-                CustomerCountry = order.Customer.Country,
-                CustomerPhone = order.Customer.Phone,
-                CustomerFax = order.Customer.Fax,
-                EmployeeLastName = order.Employee.LastName,
-                EmployeeFirstName = order.Employee.FirstName,
-                EmployeeTitle = order.Employee.Title,
-                EmployeeTitleOfCourtesy = order.Employee.TitleOfCourtesy,
-                EmployeeAddress = order.Employee.Address,
-                EmployeeCity = order.Employee.City,
-                EmployeeRegion = order.Employee.Region,
-                EmployeePostalCode = order.Employee.PostalCode,
-                EmployeeCountry = order.Employee.Country,
-                EmployeeHomePhone = order.Employee.HomePhone,
-                EmployeeExtension = order.Employee.Extension,
-                ShipViaNavigationPhone = order.ShipViaNavigation.Phone,
+                CustomerContactName = order.Customer?.ContactName,
+                CustomerContactTitle = order.Customer?.ContactTitle,
+                CustomerAddress = order.Customer?.Address,
+                CustomerCity = order.Customer?.City,
+                CustomerRegion = order.Customer?.Region,
+                CustomerPostalCode = order.Customer?.PostalCode,
+                CustomerCountry = order.Customer?.Country,
+                CustomerPhone = order.Customer?.Phone,
+                CustomerFax = order.Customer?.Fax,
+                EmployeeLastName = order.Employee?.LastName,
+                EmployeeFirstName = order.Employee?.FirstName,
+                EmployeeTitle = order.Employee?.Title,
+                EmployeeTitleOfCourtesy = order.Employee?.TitleOfCourtesy,
+                EmployeeAddress = order.Employee?.Address,
+                EmployeeCity = order.Employee?.City,
+                EmployeeRegion = order.Employee?.Region,
+                EmployeePostalCode = order.Employee?.PostalCode,
+                EmployeeCountry = order.Employee?.Country,
+                EmployeeHomePhone = order.Employee?.HomePhone,
+                EmployeeExtension = order.Employee?.Extension,
+                ShipViaNavigationPhone = order.ShipViaNavigation?.Phone,
             };
         }
 
