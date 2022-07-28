@@ -17,6 +17,9 @@ namespace OrmPerformance.Services.Dapper
         {
             var order = _dapperRepositories.Get(id);
 
+            if (order == null)
+                return null;
+
             return new OrderGet()
             {
                 Id = order.OrderId,
@@ -33,6 +36,9 @@ namespace OrmPerformance.Services.Dapper
         {
             var order = _dapperRepositories.GetExtended(phrase);
 
+            if (order == null)
+                return null;
+
             return new OrderGet()
             {
                 Id = order.OrderId,
@@ -48,6 +54,9 @@ namespace OrmPerformance.Services.Dapper
         public OrderGetExtended GetWithJoin(int id)
         {
             var order = _dapperRepositories.GetWithJoin(id);
+
+            if (order == null)
+                return null;
 
             return new OrderGetExtended()
             {
@@ -85,6 +94,9 @@ namespace OrmPerformance.Services.Dapper
         public OrderGetExtended GetWithJoinExtended(string phrase)
         {
             var order = _dapperRepositories.GetWithJoinExtended(phrase);
+
+            if (order == null)
+                return null;
 
             return new OrderGetExtended()
             {

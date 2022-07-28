@@ -20,7 +20,7 @@
                 <option value="6">Update</option>
                 <option value="7">Delete</option>
             </select>
-            <input id="count" class="form-control" type="number" style="width:150px;margin-left:auto;display:none;"/>
+            <input id="count" class="form-control" type="number" style="width:150px;margin-left:auto;display:none;" />
         </div>
         <div class="mb-4 mt-0">
             <div id="idParamDiv" style="display:none;">
@@ -31,10 +31,13 @@
                 <p>Parametr</p>
                 <input id="phraseParam" class="form-control" type="text" />
             </div>
-            <div id="idsParamDiv" style="display:none;">
-                <textarea id="idsParam"></textarea>
+            <div id="idsEntityParamDiv" style="display:none;">
+                <textarea id="idsEntityParam"></textarea>
             </div>
-           <div id="createParamDiv" style="display:none;">
+            <div id="idsDapperParamDiv" style="display:none;">
+                <textarea id="idsDapperParam"></textarea>
+            </div>
+            <div id="createParamDiv" style="display:none;">
                 <p>Parametry</p>
                 <input id="shipNameParam" class="form-control" type="text" />
                 <input id="shipAddressParam" class="form-control" type="text" />
@@ -61,10 +64,12 @@
         </div>
         <div class="col-4">
             <p>Dapper</p>
-            <div class="spinner-grow text-dark" role="status">
+            <div><img alt="Dapper" src="./img/entityFramework.png" style="width:15vw;height:25vh" /></div>
+            <div id="dapperSpinner" class="spinner-grow text-dark" role="status" style="display:none;">
                 <span class="sr-only"></span>
             </div>
             <p id="dapperTime">- s</p>
+            <pre id="resultDapper"></pre>
         </div>
         <div class="col-4">
             <p>nHibernate</p>
@@ -83,7 +88,8 @@
         $("#idParamDiv").hide();
         $("#phraseParamDiv").hide();
         $("#createParamDiv").hide();
-        $("#idsParamDiv").hide();
+        $("#idsEntityParamDiv").hide();
+        $("#idsDapperParamDiv").hide();
         $("#count").hide();
         $("#start").hide();
 
@@ -114,12 +120,14 @@
              $("#start").show();
              break;
            case "6":
+            $("#idsEntityParamDiv").show();
+            $("#idsDapperParamDiv").show();
             $("#createParamDiv").show();
-            $("#idsParamDiv").show();
             $("#start").show();
            break;
           case "7":
-            $("#idsParamDiv").show();
+            $("#idsEntityParamDiv").show();
+            $("#idsDapperParamDiv").show();
             $("#start").show();
            break;
          }
@@ -128,6 +136,9 @@
      function start(){
          $("#entityTime").html("- s");
          $("#resultEntity").html("");
+
+         $("#dapperTime").html("- s");
+         $("#resultDapper").html("");
 
          var count = $("#count").val();
          var option = $('#operationOption').find(":selected").val();
@@ -161,7 +172,7 @@
              createEntity(create, count);
              break;
             case "6":
-             var ids = JSON.parse($("#idsParam").val());
+             var ids = JSON.parse($("#idsEntityParam").val());
              var update = {
                  ShipName: $("#shipNameParam").val(),
                  ShipAddress: $("#shipAddressParam").val(),
@@ -173,13 +184,15 @@
              updateEntity(ids,update)
              break;
            case "7":
-             var ids = JSON.parse($("#idsParam").val());
+             var ids = JSON.parse($("#idsEntityParam").val());
              deleteEntity(ids)
              break;
            default:
              alert("Proszę wybrać opcję")
          }
      }
+
+     //==================================================================================== GET 
      function getEntity(id, count) {
          $("#entitySpinner").show();
          $.ajax({
@@ -202,10 +215,38 @@
              },
              complete: function (xhr, status) {
                  $("#entitySpinner").hide();
+                 getDapper(id, count)
              }
          });
      }
 
+     function getDapper(id, count) {
+         $("#dapperSpinner").show();
+         $.ajax({
+             url: '/Dapper/Get',
+             data: { id: id, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultDapper").html("Nie znaleziono");
+                 else{
+                    $("#resultDapper").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                $("#dapperTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#dapperSpinner").hide();
+             }
+         });
+     }
+
+     //==================================================================================== GET EXTENDED
      function getExtendedEntity(phrase, count) {
          $("#entitySpinner").show();
          $.ajax({
@@ -228,9 +269,38 @@
              },
              complete: function (xhr, status) {
                  $("#entitySpinner").hide();
+                 getExtendedDapper(phrase, count);
              }
          });
      }
+
+     function getExtendedDapper(phrase, count) {
+         $("#dapperSpinner").show();
+         $.ajax({
+             url: '/Dapper/GetExtended',
+             data: { phrase: phrase, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultDapper").html("Nie znaleziono");
+                 else{
+                    $("#resultDapper").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                 $("#dapperTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#dapperSpinner").hide();
+             }
+         });
+     }
+
+    //==================================================================================== GET WITH JOIN
 
      function getWithJoinEntity(id, count) {
          $("#entitySpinner").show();
@@ -254,9 +324,38 @@
              },
              complete: function (xhr, status) {
                  $("#entitySpinner").hide();
+                 getWithJoinDapper(id, count);
              }
          });
      }
+
+     function getWithJoinDapper(id, count) {
+         $("#dapperSpinner").show();
+         $.ajax({
+             url: '/Dapper/GetWithJoin',
+             data: { id: id, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultDapper").html("Nie znaleziono");
+                 else{
+                    $("#resultDapper").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                 $("#dapperTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#dapperSpinner").hide();
+             }
+         });
+     }
+
+    //==================================================================================== GET WITH JOIN EXTENDED
 
     function getWithJoinExtendedEntity(phrase, count) {
          $("#entitySpinner").show();
@@ -266,7 +365,7 @@
              type: 'GET',
              dataType: 'json',
              success: function (data) {
-                              
+
                  if(data.result[0] == null)
                      $("#resultEntity").html("Nie znaleziono");
                  else{
@@ -280,9 +379,38 @@
              },
              complete: function (xhr, status) {
                  $("#entitySpinner").hide();
+                 getWithJoinExtendedDapper(phrase, count);
              }
          });
      }
+
+         function getWithJoinExtendedDapper(phrase, count) {
+         $("#dapperSpinner").show();
+         $.ajax({
+             url: '/Dapper/GetWithJoinExtended',
+             data: { phrase: phrase, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultDapper").html("Nie znaleziono");
+                 else{
+                    $("#resultDapper").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                 $("#dapperTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#dapperSpinner").hide();
+             }
+         });
+     }
+
+    //==================================================================================== CREATE
 
     function createEntity(create, count) {
          $("#entitySpinner").show();
@@ -306,28 +434,81 @@
              },
              complete: function (xhr, status) {
                  $("#entitySpinner").hide();
+                 createDapper(create, count)
              }
          });
      }
 
-        function updateEntity(ids,update) {
-         $("#entitySpinner").show();
+     function createDapper(create, count) {
+         $("#dapperSpinner").show();
          $.ajax({
-             url: '/Entity/Update',
-             data: { ids: ids, update: update },
+             url: '/Dapper/Create',
+             data: { count: count, create: create },
              type: 'POST',
              dataType: 'json',
              success: function (data) {
-                 $("#entityTime").html(data.time);
+
+                 if(data.result[0] == null)
+                     $("#resultDapper").html("Nie stworzono");
+                 else{
+                    $("#resultDapper").html(JSON.stringify(data.result, null, 4));
+                 }
+
+                 $("#dapperTime").html(data.time);
              },
              error: function (xhr, status) {
                  alert('Przepraszamy, wystąpił problem!');
              },
              complete: function (xhr, status) {
-                 $("#entitySpinner").hide();
+                 $("#dapperSpinner").hide();
              }
          });
      }
+
+     //==================================================================================== UPDATE
+
+    function updateEntity(ids,update) {
+        $("#entitySpinner").show();
+        $.ajax({
+            url: '/Entity/Update',
+            data: { ids: ids, update: update },
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                $("#entityTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#entitySpinner").hide();
+                updateDapper(update)
+            }
+        });
+    }
+
+    
+    function updateDapper(update) {
+        var ids = JSON.parse($("#idsDapperParam").val());
+        $("#dapperSpinner").show();
+        $.ajax({
+            url: '/Dapper/Update',
+            data: { ids: ids, update: update },
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                $("#dapperTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#dapperSpinner").hide();
+            }
+        });
+    }
+
+     //==================================================================================== DELETE
 
      function deleteEntity(ids) {
          $("#entitySpinner").show();
@@ -351,8 +532,37 @@
              },
              complete: function (xhr, status) {
                  $("#entitySpinner").hide();
+                 deleteDapper();
              }
          });
      }
+
+     function deleteDapper() {
+        var ids = JSON.parse($("#idsDapperParam").val());
+        $("#dapperSpinner").show();
+         $.ajax({
+             url: '/Dapper/Delete',
+             data: { ids: ids },
+             type: 'POST',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultDapper").html("Nie stworzono");
+                 else{
+                    $("#resultDapper").html(JSON.stringify(data.result, null, 4));
+                 }
+
+                 $("#dapperTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#dapperSpinner").hide();
+             }
+         });
+     }
+
 </script>
 }

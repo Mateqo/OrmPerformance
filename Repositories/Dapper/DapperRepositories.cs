@@ -30,7 +30,7 @@ namespace OrmPerformance.Repositories.Dapper
                             WHERE 
                                 OrderID = @OrderId";
 
-            return db.Query<Order>(sql, new { @OrderId = id }).Single();
+            return db.Query<Order>(sql, new { @OrderId = id }).FirstOrDefault();
         }
 
         public Order GetExtended(string phrase)
@@ -53,7 +53,7 @@ namespace OrmPerformance.Repositories.Dapper
                                 ShipPostalCode LIKE '%' + @Phrase + '%' OR
                                 ShipCountry LIKE '%' + @Phrase + '%'";
 
-            return db.Query<Order>(sql, new { @Phrase = phrase }).Single();
+            return db.Query<Order>(sql, new { @Phrase = phrase }).FirstOrDefault();
         }
 
         public Order GetWithJoin(int id)
@@ -90,13 +90,13 @@ namespace OrmPerformance.Repositories.Dapper
                                 S.Phone AS ShipViaNavigationPhone
                             FROM 
                                 Orders O LEFT OUTER JOIN
-                                Customers C LEFT OUTER JOIN ON O.CustomerID = C.CustomerID
-                                Employees E LEFT OUTER JOIN ON O.EmployeeID = E.EmployeeID
-                                Shippers S LEFT OUTER JOIN ON O.ShipVia = S.ShipperID
+                                Customers C ON O.CustomerID = C.CustomerID LEFT OUTER JOIN
+                                Employees E ON O.EmployeeID = E.EmployeeID LEFT OUTER JOIN
+                                Shippers S ON O.ShipVia = S.ShipperID
                             WHERE 
                                 O.OrderID = @OrderId";
 
-            return db.Query<Order>(sql, new { @OrderId = id }).Single();
+            return db.Query<Order>(sql, new { @OrderId = id }).FirstOrDefault();
         }
 
         public Order GetWithJoinExtended(string phrase)
@@ -133,9 +133,9 @@ namespace OrmPerformance.Repositories.Dapper
                                 S.Phone AS ShipViaNavigationPhone
                             FROM 
                                 Orders O LEFT OUTER JOIN
-                                Customers C LEFT OUTER JOIN ON O.CustomerID = C.CustomerID
-                                Employees E LEFT OUTER JOIN ON O.EmployeeID = E.EmployeeID
-                                Shippers S LEFT OUTER JOIN ON O.ShipVia = S.ShipperID
+                                Customers C ON O.CustomerID = C.CustomerID LEFT OUTER JOIN
+                                Employees E ON O.EmployeeID = E.EmployeeID LEFT OUTER JOIN
+                                Shippers S ON O.ShipVia = S.ShipperID
                             WHERE 
                                 O.ShipName LIKE '%' + @Phrase + '%' OR
                                 O.ShipAddress LIKE '%' + @Phrase + '%' OR
@@ -165,7 +165,7 @@ namespace OrmPerformance.Repositories.Dapper
                                 E.Extension LIKE '%' + @Phrase + '%' OR
                                 S.Phone LIKE '%' + @Phrase + '%'";
 
-            return db.Query<Order>(sql, new { @Phrase = phrase }).Single();
+            return db.Query<Order>(sql, new { @Phrase = phrase }).FirstOrDefault();
         }
 
 
@@ -180,12 +180,12 @@ namespace OrmPerformance.Repositories.Dapper
                                 ShipPostalCode,
                                 ShipCountry)
                             VALUES (
-                                ShipName,
-                                ShipAddress,
-                                ShipCity,
-                                ShipRegion,
-                                ShipPostalCode,
-                                ShipCountry)
+                                @ShipName,
+                                @ShipAddress,
+                                @ShipCity,
+                                @ShipRegion,
+                                @ShipPostalCode,
+                                @ShipCountry)
                                 
                             
                             SELECT SCOPE_IDENTITY()";
@@ -196,7 +196,7 @@ namespace OrmPerformance.Repositories.Dapper
                 @ShipCity = order.ShipCity,
                 @ShipRegion = order.ShipRegion,
                 @ShipPostalCode = order.ShipPostalCode,
-                @ShipCountry = order.ShipCountry }).Single();
+                @ShipCountry = order.ShipCountry }).FirstOrDefault();
         }
 
         public void Update(Order order)
@@ -227,7 +227,7 @@ namespace OrmPerformance.Repositories.Dapper
 
         public bool Delete(int id)
         {
-            var sql = $@"   DECLARE @IsExists = 0;
+            var sql = $@"   DECLARE @IsExists BIT = 0;
 
                             IF EXISTS (SELECT * FROM Orders WHERE OrderID = @OrderId)
                             BEGIN
@@ -242,7 +242,7 @@ namespace OrmPerformance.Repositories.Dapper
     
                             SELECT @IsExists;";
 
-            return db.Query<bool>(sql, new { @OrderId = id }).Single();
+            return db.Query<bool>(sql, new { @OrderId = id }).FirstOrDefault();
         }
 
     }
