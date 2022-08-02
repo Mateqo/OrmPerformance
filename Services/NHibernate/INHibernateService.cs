@@ -8,8 +8,8 @@ namespace OrmPerformance.Services.NHibernate
         OrderGet GetExtended(string phrase);
         OrderGetExtended GetWithJoin(int id);
         OrderGetExtended GetWithJoinExtended(string phrase);
-        int Create(OrderCreate create);
-        void Update(OrderUpdate update);
-        bool Delete(int id);
+        //int Create(OrderCreate create);
+        //void Update(OrderUpdate update);
+        //bool Delete(int id);
     }
 }

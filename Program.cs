@@ -22,7 +22,10 @@ builder.Services.AddTransient<IEntityFrameworkService, EntityFrameworkService>()
 builder.Services.AddTransient<IDapperRepositories, DapperRepositories>();
 builder.Services.AddTransient<IDapperService, DapperService>();
 
-builder.Services.AddNHibernate(builder.Configuration["Connectionstring"]);
+builder.Services.AddTransient<INHibernateRepositories, NHibernateRepositories>();
+builder.Services.AddTransient<INHibernateService, NHibernateService>();
+
+//builder.Services.AddNHibernate(builder.Configuration["Connectionstring"]);
 
 builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();

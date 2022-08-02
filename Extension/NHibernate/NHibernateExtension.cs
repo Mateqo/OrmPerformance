@@ -1,38 +1,40 @@
-﻿using NHibernate.Cfg;
-using NHibernate.Cfg.MappingSchema;
-using NHibernate.Dialect;
-using NHibernate.Mapping.ByCode;
-using OrmPerformance.Repositories.NHibernate;
-using OrmPerformance.Services.NHibernate;
+﻿using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
+using NHibernate;
+using NHibernate.Tool.hbm2ddl;
+using ISession = NHibernate.ISession;
 
 namespace OrmPerformance.Extension.NHibernate
 {
     public static class NHibernateExtension
     {
-        public static void AddNHibernate(this IServiceCollection services, string connection)
+        private static ISessionFactory _sessionFactory;
+
+        private static ISessionFactory SessionFactory
         {
-            var mapper = new ModelMapper();
-            mapper.AddMappings(typeof(NHibernateExtension).Assembly.ExportedTypes);
-            HbmMapping domainMapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
-
-            var configuration = new Configuration();
-            configuration.DataBaseIntegration(c =>
+            get
             {
-                c.Dialect<MsSql2012Dialect>();
-                c.ConnectionString = connection;
-                c.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
-                c.SchemaAction = SchemaAutoAction.Validate;
-                c.LogFormattedSql = true;
-                c.LogSqlInConsole = true;
-            });
-            configuration.AddMapping(domainMapping);
+                if (_sessionFactory == null)
+                    InitializeSessionFactory();
 
-            var sessionFactory = configuration.BuildSessionFactory();
 
-            services.AddSingleton(sessionFactory);
-            services.AddScoped(factory => sessionFactory.OpenSession());
-            services.AddScoped<INHibernateRepositories, NHibernateRepositories>();
-            services.AddScoped<INHibernateService, NHibernateService>();
+                return _sessionFactory;
+            }
         }
+
+        public static void InitializeSessionFactory()
+        {
+            _sessionFactory = Fluently.Configure()
+                .Database(MsSqlConfiguration.MsSql2012.ConnectionString("Server=.\\SQLExpress;Database=Northwind;Trusted_Connection=True;").ShowSql())
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Program>())
+                .ExposeConfiguration(cfg => new SchemaExport(cfg).Create(false, false))
+                .BuildSessionFactory();
+        }
+
+        public static ISession OpenSession()
+        {
+            return SessionFactory.OpenSession();
+        }
+
     }
 }

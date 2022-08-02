@@ -6,23 +6,22 @@ namespace OrmPerformance.Models.NHibernate
 {
     public class Shipper
     {
+        public virtual int ShipperID { get; set; }
         public virtual string Phone { get; set; }
+        public virtual IList<Order> Orders { get; set; }
+
     }
 
     public class ShipperMap : ClassMap<Shipper>
     {
         public ShipperMap()
         {
+            Id(x => x.ShipperID);
 
             Map(x => x.Phone)
               .Nullable();
 
-            //Property(b => b.Phone, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
+            HasMany(x => x.Orders).KeyColumn("ShipVia").Inverse().Cascade.All();
 
             Table("Shippers");
         }

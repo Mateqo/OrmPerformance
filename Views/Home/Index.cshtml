@@ -37,6 +37,9 @@
             <div id="idsDapperParamDiv" style="display:none;">
                 <textarea id="idsDapperParam"></textarea>
             </div>
+            <div id="idsNHibernateParamDiv" style="display:none;">
+                <textarea id="idsNHibernateParam"></textarea>
+            </div>
             <div id="createParamDiv" style="display:none;">
                 <p>Parametry</p>
                 <input id="shipNameParam" class="form-control" type="text" />
@@ -72,11 +75,13 @@
             <pre id="resultDapper"></pre>
         </div>
         <div class="col-4">
-            <p>nHibernate</p>
-            <div class="spinner-grow text-dark" role="status">
+            <p>NHibernate</p>
+            <div><img alt="NHibernate" src="./img/entityFramework.png" style="width:15vw;height:25vh" /></div>
+            <div id="nHibernateSpinner" class="spinner-grow text-dark" role="status" style="display:none;">
                 <span class="sr-only"></span>
             </div>
             <p id="nHibernateTime">- s</p>
+            <pre id="resultNHibernate"></pre>
         </div>
     </div>
 </div>
@@ -90,6 +95,7 @@
         $("#createParamDiv").hide();
         $("#idsEntityParamDiv").hide();
         $("#idsDapperParamDiv").hide();
+        $("#idsNHibernateParamDiv").hide();
         $("#count").hide();
         $("#start").hide();
 
@@ -122,12 +128,14 @@
            case "6":
             $("#idsEntityParamDiv").show();
             $("#idsDapperParamDiv").show();
+            $("#idsNHibernateParamDiv").show();
             $("#createParamDiv").show();
             $("#start").show();
            break;
           case "7":
             $("#idsEntityParamDiv").show();
             $("#idsDapperParamDiv").show();
+            $("#idsNHibernateParamDiv").show();
             $("#start").show();
            break;
          }
@@ -139,6 +147,9 @@
 
          $("#dapperTime").html("- s");
          $("#resultDapper").html("");
+
+         $("#nHibernateTime").html("- s");
+         $("#resultNHibernate").html("");
 
          var count = $("#count").val();
          var option = $('#operationOption').find(":selected").val();
@@ -192,7 +203,7 @@
          }
      }
 
-     //==================================================================================== GET 
+     //==================================================================================== GET
      function getEntity(id, count) {
          $("#entitySpinner").show();
          $.ajax({
@@ -242,6 +253,33 @@
              },
              complete: function (xhr, status) {
                  $("#dapperSpinner").hide();
+                 getNHibernate(id, count);
+             }
+         });
+     }
+
+      function getNHibernate(id, count) {
+         $("#nHibernateSpinner").show();
+         $.ajax({
+             url: '/NHibernate/Get',
+             data: { id: id, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultNHibernate").html("Nie znaleziono");
+                 else{
+                    $("#resultNHibernate").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                $("#nHibernateTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#nHibernateSpinner").hide();
              }
          });
      }
@@ -296,10 +334,36 @@
              },
              complete: function (xhr, status) {
                  $("#dapperSpinner").hide();
+                 getExtendedNHibernate(phrase, count);
              }
          });
      }
 
+     function getExtendedNHibernate(phrase, count) {
+         $("#nHibernateSpinner").show();
+         $.ajax({
+             url: '/NHibernate/GetExtended',
+             data: { phrase: phrase, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultNHibernate").html("Nie znaleziono");
+                 else{
+                    $("#resultNHibernate").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                 $("#nHibernateTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#nHibernateSpinner").hide();
+             }
+         });
+     }
     //==================================================================================== GET WITH JOIN
 
      function getWithJoinEntity(id, count) {
@@ -351,6 +415,33 @@
              },
              complete: function (xhr, status) {
                  $("#dapperSpinner").hide();
+                 getWithJoinNHibernate(id, count);
+             }
+         });
+     }
+
+     function getWithJoinNHibernate(id, count) {
+         $("#nHibernateSpinner").show();
+         $.ajax({
+             url: '/NHibernate/GetWithJoin',
+             data: { id: id, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultNHibernate").html("Nie znaleziono");
+                 else{
+                    $("#resultNHibernate").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                 $("#nHibernateTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#nHibernateSpinner").hide();
              }
          });
      }
@@ -406,6 +497,33 @@
              },
              complete: function (xhr, status) {
                  $("#dapperSpinner").hide();
+                 getWithJoinExtendedNHibernate(phrase, count);
+             }
+         });
+     }
+
+     function getWithJoinExtendedNHibernate(phrase, count) {
+         $("#nHibernateSpinner").show();
+         $.ajax({
+             url: '/NHibernate/GetWithJoinExtended',
+             data: { phrase: phrase, count: count },
+             type: 'GET',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultNHibernate").html("Nie znaleziono");
+                 else{
+                    $("#resultNHibernate").html(JSON.stringify(data.result[0], null, 4));
+                 }
+
+                 $("#nHibernateTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#nHibernateSpinner").hide();
              }
          });
      }
@@ -461,6 +579,33 @@
              },
              complete: function (xhr, status) {
                  $("#dapperSpinner").hide();
+                 createNHibernate(create, count);
+             }
+         });
+     }
+
+     function createNHibernate(create, count) {
+         $("#nHibernateSpinner").show();
+         $.ajax({
+             url: '/NHibernate/Create',
+             data: { count: count, create: create },
+             type: 'POST',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultNHibernate").html("Nie stworzono");
+                 else{
+                    $("#resultNHibernate").html(JSON.stringify(data.result, null, 4));
+                 }
+
+                 $("#nHibernateTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#nHibernateSpinner").hide();
              }
          });
      }
@@ -487,7 +632,7 @@
         });
     }
 
-    
+
     function updateDapper(update) {
         var ids = JSON.parse($("#idsDapperParam").val());
         $("#dapperSpinner").show();
@@ -504,6 +649,27 @@
             },
             complete: function (xhr, status) {
                 $("#dapperSpinner").hide();
+                updateNHibernate(update);
+            }
+        });
+    }
+
+    function updateNHibernate(update) {
+        var ids = JSON.parse($("#idsNHibernateParam").val());
+        $("#nHibernateSpinner").show();
+        $.ajax({
+            url: '/NHibernate/Update',
+            data: { ids: ids, update: update },
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                $("#nHibernateTime").html(data.time);
+            },
+            error: function (xhr, status) {
+                alert('Przepraszamy, wystąpił problem!');
+            },
+            complete: function (xhr, status) {
+                $("#nHibernateSpinner").hide();
             }
         });
     }
@@ -560,6 +726,34 @@
              },
              complete: function (xhr, status) {
                  $("#dapperSpinner").hide();
+                 deleteNHibernate();
+             }
+         });
+     }
+
+     function deleteNHibernate() {
+        var ids = JSON.parse($("#idsNHibernateParam").val());
+        $("#nHibernateSpinner").show();
+         $.ajax({
+             url: '/NHibernate/Delete',
+             data: { ids: ids },
+             type: 'POST',
+             dataType: 'json',
+             success: function (data) {
+
+                 if(data.result[0] == null)
+                     $("#resultNHibernate").html("Nie stworzono");
+                 else{
+                    $("#resultNHibernate").html(JSON.stringify(data.result, null, 4));
+                 }
+
+                 $("#nHibernateTime").html(data.time);
+             },
+             error: function (xhr, status) {
+                 alert('Przepraszamy, wystąpił problem!');
+             },
+             complete: function (xhr, status) {
+                 $("#nHibernateSpinner").hide();
              }
          });
      }

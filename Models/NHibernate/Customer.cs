@@ -6,6 +6,8 @@ namespace OrmPerformance.Models.NHibernate
 {
     public class Customer
     {
+        public virtual string CustomerID { get; set; }
+
         public virtual string ContactName { get; set; }
         public virtual string ContactTitle { get; set; }
         public virtual string Address { get; set; }
@@ -15,12 +17,14 @@ namespace OrmPerformance.Models.NHibernate
         public virtual string Country { get; set; }
         public virtual string Phone { get; set; }
         public virtual string Fax { get; set; }
+        public virtual IList<Order> Orders { get; set; }
     }
 
     public class CustomerMap : ClassMap<Customer>
     {
         public CustomerMap()
         {
+            Id(x => x.CustomerID);
 
             Map(x => x.ContactName)
                 .Nullable();
@@ -49,68 +53,7 @@ namespace OrmPerformance.Models.NHibernate
             Map(x => x.Fax)
              .Nullable();
 
-            //Property(b => b.ContactName, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.ContactTitle, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.Address, x =>
-            //{
-            //    x.Length(60);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.City, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.Region, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.PostalCode, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.Country, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.Phone, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
-
-            //Property(b => b.Fax, x =>
-            //{
-            //    x.Length(40);
-            //    x.Type(NHibernateUtil.StringClob);
-            //    x.NotNullable(false);
-            //});
+            HasMany(x => x.Orders).KeyColumn("CustomerID").Inverse().Cascade.All();       
 
             Table("Customers");
         }

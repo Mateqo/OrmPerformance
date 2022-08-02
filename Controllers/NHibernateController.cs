@@ -50,6 +50,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<OrderGet> orders = new List<OrderGet>();
 
                 for (int i = 1; i <= count; i++)
@@ -58,7 +61,10 @@ namespace OrmPerformance.Controllers
                     orders.Add(viewModel);
                 }
 
-                return Json(orders);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = orders, time = time });
             }
             catch (Exception e)
             {
@@ -72,6 +78,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<OrderGetExtended> orders = new List<OrderGetExtended>();
 
                 for (int i = 1; i <= count; i++)
@@ -80,7 +89,10 @@ namespace OrmPerformance.Controllers
                     orders.Add(viewModel);
                 }
 
-                return Json(orders);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = orders, time = time });
             }
             catch (Exception e)
             {
@@ -94,6 +106,9 @@ namespace OrmPerformance.Controllers
         {
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 List<OrderGetExtended> orders = new List<OrderGetExtended>();
 
                 for (int i = 1; i <= count; i++)
@@ -102,7 +117,10 @@ namespace OrmPerformance.Controllers
                     orders.Add(viewModel);
                 }
 
-                return Json(orders);
+                stopWatch.Stop();
+                var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+                return Json(new { result = orders, time = time });
             }
             catch (Exception e)
             {
@@ -111,68 +129,88 @@ namespace OrmPerformance.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult Create(int count, OrderCreate create)
-        {
-            try
-            {
-                List<int> ids = new List<int>();
+        //[HttpPost]
+        //public IActionResult Create(int count, OrderCreate create)
+        //{
+        //    try
+        //    {
+        //        Stopwatch stopWatch = new Stopwatch();
+        //        stopWatch.Start();
 
-                for (int i = 1; i <= count; i++)
-                {
-                    int id = _nHibernateService.Create(create);
-                    ids.Add(id);
-                }
+        //        List<int> ids = new List<int>();
 
-                return Json(ids);
-            }
-            catch (Exception e)
-            {
-                _logger.LogInformation(String.Format("Data: {0}, Błąd: {1}", DateTime.Now, e));
-                return View("Error");
-            }
-        }
+        //        for (int i = 1; i <= count; i++)
+        //        {
+        //            int id = _nHibernateService.Create(create);
+        //            ids.Add(id);
+        //        }
 
 
-        [HttpPost]
-        public IActionResult Update(int count, OrderUpdate update)
-        {
-            try
-            {
-                for (int i = 1; i <= count; i++)
-                {
-                    _nHibernateService.Update(update);
-                }
+        //        stopWatch.Stop();
+        //        var time = TimeFormat.GetSecondsFormat(stopWatch);
 
-                return Json(null);
-            }
-            catch (Exception e)
-            {
-                _logger.LogInformation(String.Format("Data: {0}, Błąd: {1}", DateTime.Now, e));
-                return View("Error");
-            }
-        }
+        //        return Json(new { result = ids, time = time });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _logger.LogInformation(String.Format("Data: {0}, Błąd: {1}", DateTime.Now, e));
+        //        return View("Error");
+        //    }
+        //}
 
-        [HttpPost]
-        public IActionResult Delete(int count, int id)
-        {
-            try
-            {
-                List<bool> isDeleteList = new List<bool>();
 
-                for (int i = 1; i <= count; i++)
-                {
-                    var isDelete = _nHibernateService.Delete(id);
-                    isDeleteList.Add(isDelete);
-                }
+        //[HttpPost]
+        //public IActionResult Update(List<int> ids, OrderUpdate update)
+        //{
+        //    try
+        //    {
+        //        Stopwatch stopWatch = new Stopwatch();
+        //        stopWatch.Start();
 
-                return Json(isDeleteList);
-            }
-            catch (Exception e)
-            {
-                _logger.LogInformation(String.Format("Data: {0}, Błąd: {1}", DateTime.Now, e));
-                return View("Error");
-            }
-        }
+        //        foreach (var id in ids)
+        //        {
+        //            update.Id = id;
+        //            _nHibernateService.Update(update);
+        //        }
+
+        //        stopWatch.Stop();
+        //        var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+        //        return Json(new { time = time });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _logger.LogInformation(String.Format("Data: {0}, Błąd: {1}", DateTime.Now, e));
+        //        return View("Error");
+        //    }
+        //}
+
+        //[HttpPost]
+        //public IActionResult Delete(List<int> ids)
+        //{
+        //    try
+        //    {
+        //        Stopwatch stopWatch = new Stopwatch();
+        //        stopWatch.Start();
+
+        //        List<bool> isDeleteList = new List<bool>();
+
+        //        foreach (var id in ids)
+        //        {
+        //            var isDelete = _nHibernateService.Delete(id);
+        //            isDeleteList.Add(isDelete);
+        //        }
+
+        //        stopWatch.Stop();
+        //        var time = TimeFormat.GetSecondsFormat(stopWatch);
+
+        //        return Json(new { result = isDeleteList, time = time });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _logger.LogInformation(String.Format("Data: {0}, Błąd: {1}", DateTime.Now, e));
+        //        return View("Error");
+        //    }
+        //}
     }
 }
