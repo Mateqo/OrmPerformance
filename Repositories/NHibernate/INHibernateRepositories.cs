@@ -1,4 +1,5 @@
 ﻿using OrmPerformance.Models.NHibernate;
+using OrmPerformance.ViewModels.Orders;
 
 namespace OrmPerformance.Repositories.NHibernate
 {
@@ -8,8 +9,8 @@ namespace OrmPerformance.Repositories.NHibernate
         Order GetExtended(string phrase);
         Order GetWithJoin(int id);
         Order GetWithJoinExtended(string phrase);
-        //int Create(Order order);
-        //void Update(Order order);
-        //bool Delete(int id);
+        int Create(Order order);
+        void Update(OrderUpdate order);
+        bool Delete(int id);
     }
 }

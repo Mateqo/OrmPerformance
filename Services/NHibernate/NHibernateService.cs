@@ -132,40 +132,29 @@ namespace OrmPerformance.Services.NHibernate
         }
 
 
-        //public int Create(OrderCreate create)
-        //{
-        //    var order = new Order()
-        //    {
-        //        ShipName = create.ShipName,
-        //        ShipAddress = create.ShipAddress,
-        //        ShipCity = create.ShipCity,
-        //        ShipRegion = create.ShipRegion,
-        //        ShipPostalCode = create.ShipPostalCode,
-        //        ShipCountry = create.ShipCountry,
-        //    };
+        public int Create(OrderCreate create)
+        {
+            var order = new Order()
+            {
+                ShipName = create.ShipName,
+                ShipAddress = create.ShipAddress,
+                ShipCity = create.ShipCity,
+                ShipRegion = create.ShipRegion,
+                ShipPostalCode = create.ShipPostalCode,
+                ShipCountry = create.ShipCountry,
+            };
 
-        //    return _nHibernateRepositories.Create(order);
-        //}
+            return _nHibernateRepositories.Create(order);
+        }
 
-        //public void Update(OrderUpdate update)
-        //{
-        //    var order = new Order()
-        //    {
-        //        OrderID = update.Id,
-        //        ShipName = update.ShipName,
-        //        ShipAddress = update.ShipAddress,
-        //        ShipCity = update.ShipCity,
-        //        ShipRegion = update.ShipRegion,
-        //        ShipPostalCode = update.ShipPostalCode,
-        //        ShipCountry = update.ShipCountry,
-        //    };
+        public void Update(OrderUpdate update)
+        {
+            _nHibernateRepositories.Update(update);
+        }
 
-        //    _nHibernateRepositories.Update(order);
-        //}
-
-        //public bool Delete(int id)
-        //{
-        //    return _nHibernateRepositories.Delete(id);
-        //}
+        public bool Delete(int id)
+        {
+            return _nHibernateRepositories.Delete(id);
+        }
     }
 }

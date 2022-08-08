@@ -1,59 +1,11 @@
-﻿using NHibernate;
-using NHibernate.Linq;
-using OrmPerformance.Extension.NHibernate;
+﻿using OrmPerformance.Extension.NHibernate;
 using OrmPerformance.Models.NHibernate;
-using ISession = NHibernate.ISession;
-
+using OrmPerformance.ViewModels.Orders;
 
 namespace OrmPerformance.Repositories.NHibernate
 {
     public class NHibernateRepositories : INHibernateRepositories
     {
-        //private readonly ISession _session;
-        //private ITransaction _transaction;
-
-        //public NHibernateRepositories(ISession session)
-        //{
-        //    _session = session;
-        //}
-
-        //public IQueryable<Order> Orders => _session.Query<Order>();
-
-        //public void BeginTransaction()
-        //{
-        //    _transaction = _session.BeginTransaction();
-        //}
-
-        //public async Task Commit()
-        //{
-        //    await _transaction.CommitAsync();
-        //}
-
-        //public async Task Rollback()
-        //{
-        //    await _transaction.RollbackAsync();
-        //}
-
-        //public void CloseTransaction()
-        //{
-        //    if (_transaction != null)
-        //    {
-        //        _transaction.Dispose();
-        //        _transaction = null;
-        //    }
-        //}
-
-        //public async Task Save(Order entity)
-        //{
-        //    await _session.SaveOrUpdateAsync(entity);
-        //}
-
-        //public async Task Delete(Order entity)
-        //{
-        //    await _session.DeleteAsync(entity);
-        //}
-
-
         public Order Get(int id)
         {
             var session = NHibernateExtension.OpenSession();
@@ -113,28 +65,43 @@ namespace OrmPerformance.Repositories.NHibernate
                         x.Shipper.Phone.Contains(phrase));
         }
 
-        //public int Create(Order order)
-        //{
-        //    _session.Save(order);
-        //    return order.OrderID;
-        //}
+        public int Create(Order order)
+        {
+            var session = NHibernateExtension.OpenSession();
+            session.Save(order);
+            return order.OrderID;
+        }
 
-        //public void Update(Order order)
-        //{
-        //    _session.Update(order);
-        //}
+        public void Update(OrderUpdate order)
+        {
+            var session = NHibernateExtension.OpenSession();
+            var item = session.Get<Order>(order.Id);
 
-        //public bool Delete(int id)
-        //{
-        //    var item = _session.Get<Order>(id);
-        //    if (item != null)
-        //    {
-        //        _session.DeleteAsync(item);
+            item.ShipCity = order?.ShipCity;
+            item.ShipRegion = order?.ShipRegion;
+            item.ShipPostalCode = order?.ShipPostalCode;
+            item.ShipCountry = order?.ShipCountry;
+            item.ShipName = order?.ShipName;
+            item.ShipAddress = order?.ShipAddress;
 
-        //        return true;
-        //    }
+            session.SaveOrUpdate(item);
+            session.Flush();
+        }
 
-        //    return false;
-        //}
+        public bool Delete(int id)
+        {
+            var session = NHibernateExtension.OpenSession();
+            var item = session.Get<Order>(id);
+            if (item != null)
+            {
+                session.Delete(item);
+                session.Flush();
+
+                return true;
+            }
+
+            return false;
+        }
+
     }
 }

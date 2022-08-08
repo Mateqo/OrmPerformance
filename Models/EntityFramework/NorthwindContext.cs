@@ -48,7 +48,7 @@ namespace OrmPerformance.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Northwind;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Northwind_EntityFramework;Trusted_Connection=True;");
             }
         }
 

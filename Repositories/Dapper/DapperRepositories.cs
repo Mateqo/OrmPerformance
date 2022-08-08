@@ -11,7 +11,7 @@ namespace OrmPerformance.Repositories.Dapper
 
         public DapperRepositories(IConfiguration configuration)
         {
-            db = new SqlConnection(configuration.GetValue<string>("Connectionstring"));
+            db = new SqlConnection("Server=.\\SQLExpress;Database=Northwind_Dapper;Trusted_Connection=True;");
         }
 
 

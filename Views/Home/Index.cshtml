@@ -3,88 +3,115 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Start</h1>
-    <p>W tym przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie przykładzie</p>
+    <h1 class="display-4">Testy wydajnościowe</h1>
+    <p>Aplikacja pozwala na wykonywanie zapytań na bazie danych za pomocą narzędzi do mapowania relacyjno-obiektowego, takich jak Entity Framework, Dapper oraz NHibernate. Możliwe jest testowanie zapytania typu CRUD oraz bardziej wymagających zapytań SQL. W rezultacie testów wydajnościowych otrzymane zostaną wyniki podane w sekundach dla każdego wyżej wymienionego narzędzia.</p>
 </div>
 
-<div>
-    <div class="text-center mt-5">
-        <div class="d-block mt-5 mb-5">
-            <select id="operationOption" class="form-select d-inline" style="width:250px;">
-                <option selected disabled hidden>Proszę wybrać opcję</option>
-                <option value="1">Get (identyfikator)</option>
-                <option value="2">Get (nazwa)</option>
-                <option value="3">Get z relacją (identyfikator)</option>
-                <option value="4">Get z relacją (nazwa)</option>
-                <option value="5">Create</option>
-                <option value="6">Update</option>
-                <option value="7">Delete</option>
-            </select>
-            <input id="count" class="form-control" type="number" style="width:150px;margin-left:auto;display:none;" />
+<div class="text-center mt-5">
+    <div class="d-block mt-5 mb-5">
+        <select id="operationOption" class="form-select d-inline" style="width:250px;">
+            <option selected disabled hidden>Proszę wybrać opcję</option>
+            <option value="1">Get (identyfikator)</option>
+            <option value="2">Get (nazwa)</option>
+            <option value="3">Get z relacją (identyfikator)</option>
+            <option value="4">Get z relacją (nazwa)</option>
+            <option value="5">Create</option>
+            <option value="6">Update</option>
+            <option value="7">Delete</option>
+        </select>
+        <div id="countDiv" class="input-label" style="width:150px;display:none;margin-left:auto;margin-right:auto;margin-top:30px;">
+            <label>Liczba operacji</label>
+            <input id="count" type="number">
         </div>
-        <div class="mb-4 mt-0">
-            <div id="idParamDiv" style="display:none;">
-                <p>Parametr</p>
-                <input id="idParam" class="form-control" type="number" />
-            </div>
-            <div id="phraseParamDiv" style="display:none;">
-                <p>Parametr</p>
-                <input id="phraseParam" class="form-control" type="text" />
-            </div>
-            <div id="idsEntityParamDiv" style="display:none;">
-                <textarea id="idsEntityParam"></textarea>
-            </div>
-            <div id="idsDapperParamDiv" style="display:none;">
-                <textarea id="idsDapperParam"></textarea>
-            </div>
-            <div id="idsNHibernateParamDiv" style="display:none;">
-                <textarea id="idsNHibernateParam"></textarea>
-            </div>
-            <div id="createParamDiv" style="display:none;">
-                <p>Parametry</p>
-                <input id="shipNameParam" class="form-control" type="text" />
-                <input id="shipAddressParam" class="form-control" type="text" />
-                <input id="shipCityParam" class="form-control" type="text" />
-                <input id="shipRegionParam" class="form-control" type="text" />
-                <input id="shipPostalCodeParam" class="form-control" type="text" />
-                <input id="shipCountryParam" class="form-control" type="text" />
-            </div>
-        </div>
-        <a class="btn btn-dark font-weight-bold" id="start" onclick="start();" style="display:none;">Rozpocznij test</a>
     </div>
-    @*    <div class="spinner-border text-dark" role="status">
-        <span class="sr-only"></span>
-        </div>*@
-    <div class="row text-center mt-5">
-        <div class="col-4">
-            <p>Entity Framework</p>
-            <div><img alt="Entity Framewok" src="./img/entityFramework.png" style="width:15vw;height:25vh" /></div>
-            <div id="entitySpinner" class="spinner-grow text-dark" role="status" style="display:none;">
-                <span class="sr-only"></span>
-            </div>
-            <p id="entityTime">- s</p>
-            <pre id="resultEntity"></pre>
+    <div class="mb-4 mt-0">
+        <div id="idParamDiv" class="input-label" style="width:150px;display:none;margin-left:auto;margin-right:auto;margin-top:-20px;margin-bottom:-20px;">
+            <label>OrderID</label>
+            <input id="idParam" type="number">
         </div>
-        <div class="col-4">
-            <p>Dapper</p>
-            <div><img alt="Dapper" src="./img/entityFramework.png" style="width:15vw;height:25vh" /></div>
-            <div id="dapperSpinner" class="spinner-grow text-dark" role="status" style="display:none;">
-                <span class="sr-only"></span>
-            </div>
-            <p id="dapperTime">- s</p>
-            <pre id="resultDapper"></pre>
+        <div id="phraseParamDiv" class="input-label" style="width:300px;display:none;margin-left:auto;margin-right:auto;margin-top:-20px;margin-bottom:-20px;">
+            <label>Fraza do wyszukiwania</label>
+            <input id="phraseParam" type="text">
         </div>
-        <div class="col-4">
-            <p>NHibernate</p>
-            <div><img alt="NHibernate" src="./img/entityFramework.png" style="width:15vw;height:25vh" /></div>
-            <div id="nHibernateSpinner" class="spinner-grow text-dark" role="status" style="display:none;">
-                <span class="sr-only"></span>
+        <div style="display:inline-flex;margin-bottom:30px;">
+            <div id="idsEntityParamDiv" style="display:none">
+                <div style="display:grid;padding-left:10px;padding-right:10px;">
+                    <label style="text-align:left;font-weight:bold;">Entity (Json)</label>
+                    <textarea id="idsEntityParam" class="jsonText"></textarea>
+                </div>
             </div>
-            <p id="nHibernateTime">- s</p>
-            <pre id="resultNHibernate"></pre>
+            <div id="idsDapperParamDiv" style="display:none">
+                <div style="display:grid;padding-left:10px;padding-right:10px;">
+                    <label style="text-align:left;font-weight:bold;">Dapper (Json)</label>
+                    <textarea id="idsDapperParam" class="jsonText"></textarea>
+                </div>
+            </div>
+            <div id="idsNHibernateParamDiv" style="display:none">
+                <div style="display:grid;padding-left:10px;padding-right:10px;">
+                    <label style="text-align:left;font-weight:bold;">NHibernate (Json)</label>
+                    <textarea id="idsNHibernateParam" class="jsonText"></textarea>
+                </div>
+            </div>
         </div>
+        <div id="createParamDiv" class="row" style="display:none;margin-top:-80px;">
+            <div class="input-label" style="width:450px;margin-left:auto;margin-right:auto;margin-top:80px">
+                <label style="text-align:left;">ShipName</label>
+                <input id="shipNameParam" type="text">
+            </div>
+            <div class="input-label" style="width:450px;margin-left:auto;margin-right:auto;margin-top:80px;">
+                <label style="text-align:left;">ShipAddress</label>
+                <input id="shipAddressParam" type="text">
+            </div>
+            <div class="input-label" style="width:450px;margin-left:auto;margin-right:auto;margin-top:20px;">
+                <label style="text-align:left;">ShipCity</label>
+                <input id="shipCityParam" type="text">
+            </div>
+            <div class="input-label" style="width:450px;margin-left:auto;margin-right:auto;margin-top:20px;">
+                <label style="text-align:left;">ShipRegion</label>
+                <input id="shipRegionParam" type="text">
+            </div>
+            <div class="input-label" style="width:450px;margin-left:auto;margin-right:auto;margin-top:20px;">
+                <label style="text-align:left;">ShipPostalCode</label>
+                <input id="shipPostalCodeParam" type="text">
+            </div>
+            <div class="input-label" style="width:450px;margin-left:auto;margin-right:auto;margin-top:20px;">
+                <label style="text-align:left;">ShipCountry</label>
+                <input id="shipCountryParam" type="text">
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-dark font-weight-bold" id="start" onclick="start();" style="display:none;margin-top:20px;margin-bottom:50px;">Rozpocznij test</a>
+</div>
+<div class="row text-center justify-content-between" style="margin-top:40px;">
+    <div class="col-auto box box-left">
+        <h2 style="margin-top:-55px;" class="display-6">Entity Framework</h2>
+        <div><img alt="Entity Framewok" src="./img/entityFramework.png" style="height:21vh;padding-top:15px;" /></div>
+        <div id="entitySpinner" class="spinner-grow text-dark" role="status" style="display:none;">
+            <span class="sr-only"></span>
+        </div>
+        <p id="entityTime">- s</p>
+        <pre id="resultEntity"></pre>
+    </div>
+    <div class="col-auto box box-center">
+        <h2 style="margin-top:-55px;" class="display-6">Dapper</h2>
+        <div><img alt="Dapper" src="./img/dapper.png" style="height:21vh;padding-top:15px;" /></div>
+        <div id="dapperSpinner" class="spinner-grow text-dark" role="status" style="display:none;">
+            <span class="sr-only"></span>
+        </div>
+        <p id="dapperTime">- s</p>
+        <pre id="resultDapper"></pre>
+    </div>
+    <div class="col-auto box box-right">
+        <h2 style="margin-top:-55px;" class="display-6">NHibernate</h2>
+        <div><img alt="NHibernate" src="./img/nHibernate.png" style="height:21vh;padding-top:15px;transform: scale(0.7);margin-left:-28px;" /></div>
+        <div id="nHibernateSpinner" class="spinner-grow text-dark" role="status" style="display:none;">
+            <span class="sr-only"></span>
+        </div>
+        <p id="nHibernateTime">- s</p>
+        <pre id="resultNHibernate"></pre>
     </div>
 </div>
+
 
 
 @section Scripts{
@@ -96,33 +123,33 @@
         $("#idsEntityParamDiv").hide();
         $("#idsDapperParamDiv").hide();
         $("#idsNHibernateParamDiv").hide();
-        $("#count").hide();
+        $("#countDiv").hide();
         $("#start").hide();
 
         switch(this.value) {
            case "1":
              $("#idParamDiv").show();
-             $("#count").show();
+             $("#countDiv").show();
              $("#start").show();
              break;
            case "2":
             $("#phraseParamDiv").show();
-            $("#count").show();
+            $("#countDiv").show();
             $("#start").show();
              break;
            case "3":
             $("#idParamDiv").show();
-            $("#count").show();
+            $("#countDiv").show();
             $("#start").show();
              break;
           case "4":
              $("#phraseParamDiv").show();
-             $("#count").show();
+             $("#countDiv").show();
              $("#start").show();
              break;
            case "5":
              $("#createParamDiv").show();
-             $("#count").show();
+             $("#countDiv").show();
              $("#start").show();
              break;
            case "6":
@@ -686,7 +713,7 @@
              success: function (data) {
 
                  if(data.result[0] == null)
-                     $("#resultEntity").html("Nie stworzono");
+                     $("#resultEntity").html("Nie usunięto");
                  else{
                     $("#resultEntity").html(JSON.stringify(data.result, null, 4));
                  }
@@ -714,7 +741,7 @@
              success: function (data) {
 
                  if(data.result[0] == null)
-                     $("#resultDapper").html("Nie stworzono");
+                     $("#resultDapper").html("Nie usunięto");
                  else{
                     $("#resultDapper").html(JSON.stringify(data.result, null, 4));
                  }
@@ -742,7 +769,7 @@
              success: function (data) {
 
                  if(data.result[0] == null)
-                     $("#resultNHibernate").html("Nie stworzono");
+                     $("#resultNHibernate").html("Nie usunięto");
                  else{
                     $("#resultNHibernate").html(JSON.stringify(data.result, null, 4));
                  }

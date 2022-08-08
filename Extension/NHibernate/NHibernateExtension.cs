@@ -25,7 +25,7 @@ namespace OrmPerformance.Extension.NHibernate
         public static void InitializeSessionFactory()
         {
             _sessionFactory = Fluently.Configure()
-                .Database(MsSqlConfiguration.MsSql2012.ConnectionString("Server=.\\SQLExpress;Database=Northwind;Trusted_Connection=True;").ShowSql())
+                .Database(MsSqlConfiguration.MsSql2012.ConnectionString("Server=.\\SQLExpress;Database=Northwind_NHibernate;Trusted_Connection=True;").ShowSql())
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Program>())
                 .ExposeConfiguration(cfg => new SchemaExport(cfg).Create(false, false))
                 .BuildSessionFactory();
